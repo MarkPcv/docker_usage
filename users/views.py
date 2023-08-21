@@ -8,6 +8,7 @@ class CreateUserAPIView(generics.CreateAPIView):
     Create DRF generic for model `users.User`
     """
     serializer_class = UserSerializer
+    authentication_classes = []
 
     def perform_create(self, serializer):
         new_user = serializer.save()
