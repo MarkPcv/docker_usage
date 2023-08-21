@@ -1,3 +1,14 @@
-from django.shortcuts import render
+from rest_framework import generics
 
-# Create your views here.
+from users.serializers import UserSerializer
+
+
+class CreateUserAPIView(generics.CreateAPIView):
+    """
+    Create DRF generic for model `users.User`
+    """
+    serializer_class = UserSerializer
+
+    # def perform_create(self, serializer):
+    #     new_user = serializer.save()
+    #     new_user.set_password()
