@@ -27,7 +27,6 @@ class HabitTest(APITestCase):
         """Set up initial objects for each test"""
         # Create MEMBER user
         self.create_user()
-
         # Create Course object
         self.course = Habit.objects.create(
             place='place1',
@@ -36,7 +35,8 @@ class HabitTest(APITestCase):
             is_pleasant=False,
             is_public=True,
             exec_time=60,
-            period=1
+            period=1,
+            owner=self.user,
         )
 
     def test_habit_create(self):
@@ -71,4 +71,25 @@ class HabitTest(APITestCase):
 
     def test_habit_read(self):
         """Testings habit retrieval"""
+        # Authenticate user without token
+        self.client.force_authenticate(self.user)
+        # Get first habit
+        response = self.client.get(
+            '/habits/1/'
+        )
+        # Check status
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+        # Check habit data
+        self.assertEqual(
+            response.json(),
+            {'id': 1, 'place': 'place1', 'action': 'action1',
+             'time': '07:00:00', 'is_pleasant': False, 'is_public': True,
+             'exec_time': 60, 'period': 1, 'award': None,
+             'associated_habit': None, 'owner': 1}
+        )
+
+
 
