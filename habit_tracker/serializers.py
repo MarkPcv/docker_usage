@@ -81,3 +81,4 @@ class HabitSerializer(serializers.ModelSerializer):
                 "The pleasant habit cannot have award")
 
         return data
+
