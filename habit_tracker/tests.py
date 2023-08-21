@@ -4,7 +4,6 @@ from rest_framework.test import APITestCase
 
 from habit_tracker.models import Habit
 from users.models import User
-from django.test import TestCase
 
 # print(response.json()) ## TODO remove after FINISH
 
@@ -13,7 +12,7 @@ class HabitTest(APITestCase):
     """
     Class for testing model `habit_tracker.Model`
     """
-    def create_user(self) -> None:
+    def create_user(self):
         """Creates a new user for testing"""
         # Create test user with MEMBER role
         self.user = User.objects.create(
@@ -23,12 +22,12 @@ class HabitTest(APITestCase):
         self.user.set_password('test')
         self.user.save()
 
-    def setUp(self) -> None:
+    def setUp(self):
         """Set up initial objects for each test"""
         # Create MEMBER user
         self.create_user()
         # Create Course object
-        self.course = Habit.objects.create(
+        self.habit = Habit.objects.create(
             place='place1',
             action='action1',
             time='07:00',
@@ -75,7 +74,7 @@ class HabitTest(APITestCase):
         self.client.force_authenticate(self.user)
         # Get first habit
         response = self.client.get(
-            '/habits/1/'
+            f'/habits/{self.habit.pk}/'
         )
         # Check status
         self.assertEqual(
@@ -85,10 +84,10 @@ class HabitTest(APITestCase):
         # Check habit data
         self.assertEqual(
             response.json(),
-            {'id': 1, 'place': 'place1', 'action': 'action1',
+            {'id': self.habit.pk, 'place': 'place1', 'action': 'action1',
              'time': '07:00:00', 'is_pleasant': False, 'is_public': True,
              'exec_time': 60, 'period': 1, 'award': None,
-             'associated_habit': None, 'owner': 1}
+             'associated_habit': None, 'owner': self.user.pk}
         )
 
     def test_habit_update(self):
@@ -101,7 +100,7 @@ class HabitTest(APITestCase):
         }
         # Change first habit
         response = self.client.patch(
-            '/habits/1/',
+            f'/habits/{self.habit.pk}/',
             data=data
         )
         # Check status
@@ -111,7 +110,7 @@ class HabitTest(APITestCase):
         )
         # Check action change
         self.assertEqual(
-            Habit.objects.get(pk=1).action,
+            Habit.objects.get(pk=self.habit.pk).action,
             'new action'
         )
 
@@ -121,7 +120,7 @@ class HabitTest(APITestCase):
         self.client.force_authenticate(self.user)
         # Delete first habit
         response = self.client.delete(
-            '/habits/1/'
+            f'/habits/{self.habit.pk}/'
         )
         # Check status
         self.assertEqual(
@@ -133,5 +132,10 @@ class HabitTest(APITestCase):
             Habit.objects.exists()
         )
 
-
+    def test_habit_print(self):
+        """Testing string representation of habit model"""
+        self.assertEqual(
+            self.habit.__str__(),
+            'I will action1 at 07:00 in place1'
+        )
 
