@@ -91,5 +91,47 @@ class HabitTest(APITestCase):
              'associated_habit': None, 'owner': 1}
         )
 
+    def test_habit_update(self):
+        """Testing habit partial update"""
+        # Authenticate user without token
+        self.client.force_authenticate(self.user)
+        # Update action of habit
+        data = {
+            'action': 'new action'
+        }
+        # Change first habit
+        response = self.client.patch(
+            '/habits/1/',
+            data=data
+        )
+        # Check status
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+        # Check action change
+        self.assertEqual(
+            Habit.objects.get(pk=1).action,
+            'new action'
+        )
+
+    def test_habit_delete(self):
+        """Testing habit deletion"""
+        # Authenticate user without token
+        self.client.force_authenticate(self.user)
+        # Delete first habit
+        response = self.client.delete(
+            '/habits/1/'
+        )
+        # Check status
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_204_NO_CONTENT
+        )
+        # Check that no lesson exists in Database
+        self.assertFalse(
+            Habit.objects.exists()
+        )
+
 
 
