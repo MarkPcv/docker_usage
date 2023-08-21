@@ -1,6 +1,6 @@
 from django.db import models
 
-from users.models import User
+from users.models import User, NULLABLE
 
 
 class Habit(models.Model):
@@ -18,9 +18,9 @@ class Habit(models.Model):
     exec_time = models.PositiveIntegerField(verbose_name='exec_time')
     period = models.PositiveIntegerField(default=1, verbose_name='period')
     # Relations and awards
-    award = models.TextField(verbose_name='award')
+    award = models.TextField(verbose_name='award', **NULLABLE)
     associated_habit = models.ForeignKey("Habit", on_delete=models.SET_NULL,
-                                         null=True, blank=True,
+                                         **NULLABLE,
                                          verbose_name='related_habit')
     owner = models.ForeignKey(User, on_delete=models.CASCADE,
                               verbose_name='owner')
