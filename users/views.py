@@ -11,6 +11,7 @@ class CreateUserAPIView(generics.CreateAPIView):
     authentication_classes = []
 
     def perform_create(self, serializer):
+        """Override super class method by setting password for new user"""
         new_user = serializer.save()
         new_user.set_password(new_user.password)
         new_user.save()
