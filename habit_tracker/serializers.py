@@ -46,9 +46,22 @@ class HabitSerializer(serializers.ModelSerializer):
         """
         # Requirement 1:
         # Only pleasant habit can be used as associated habit
-        ass_habit = data['associated_habit']
-        if not ass_habit.is_pleasant:
+        if data.get('associated_habit', None):
+            ass_habit = data['associated_habit']
+            if not ass_habit.is_pleasant:
+                raise serializers.ValidationError(
+                    "The associated habit must be pleasant")
+        # Requirement 2:
+        # Habit cannot have both associated habit and award
+        # Check that existence of both fields in the object
+        ass_habit = data.get('associated_habit',
+                             self.instance.associated_habit)
+        award = data.get('award',
+                         self.instance.award)
+        if ass_habit and award:
             raise serializers.ValidationError(
-                "The associated habit must be pleasant")
+                "Habit cannot have both associated habit and award")
+
+
 
         return data
