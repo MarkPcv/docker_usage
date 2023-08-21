@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 
 from habit_tracker.models import Habit
 from habit_tracker.permissions import IsOwner
@@ -48,3 +48,11 @@ class HabitViewSet(viewsets.ModelViewSet):
             permission_classes = []
 
         return [permission() for permission in permission_classes]
+
+
+class HabitPublicListAPIView(generics.ListAPIView):
+    """
+    List DRF generic for model 'habit_tracker.Habit' for public habits
+    """
+    queryset = Habit.objects.filter(is_public=True)
+    serializer_class = HabitSerializer
