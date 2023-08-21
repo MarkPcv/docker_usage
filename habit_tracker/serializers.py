@@ -54,7 +54,7 @@ class HabitSerializer(serializers.ModelSerializer):
             self_award = self.instance.award
             self_pleasant = self.instance.is_pleasant
         # Get pleasant attribute from request data
-        else:
+        if data.get('is_pleasant', None):
             self_pleasant = data['is_pleasant']
         # Requirement 1:
         # Only pleasant habit can be used as associated habit
