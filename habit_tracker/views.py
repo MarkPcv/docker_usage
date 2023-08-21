@@ -12,7 +12,6 @@ class HabitViewSet(viewsets.ModelViewSet):
     """
     queryset = Habit.objects.all()
     serializer_class = HabitSerializer
-    # authentication_classes = []  #TODO: remove after testing
 
     def perform_create(self, serializer):
         """Save owner field during creation"""
@@ -55,7 +54,7 @@ class HabitViewSet(viewsets.ModelViewSet):
 
 class HabitPublicListAPIView(generics.ListAPIView):
     """
-    List DRF generic for model 'habit_tracker.Habit' for public habits
+    List DRF generic for model `habit_tracker.Habit` for public habits
     """
     queryset = Habit.objects.filter(is_public=True)
     serializer_class = HabitSerializer
