@@ -1,6 +1,7 @@
 from rest_framework import viewsets, generics
 
 from habit_tracker.models import Habit
+from habit_tracker.paginators import DefaultPaginator
 from habit_tracker.permissions import IsOwner
 from habit_tracker.serializers import HabitSerializer
 
@@ -23,6 +24,8 @@ class HabitViewSet(viewsets.ModelViewSet):
         """Override LIST action so that only habits of user are displayed"""
         # Check if user is NOT moderator
         self.queryset = Habit.objects.filter(owner=self.request.user)
+        # Add pagination
+        self.pagination_class = DefaultPaginator
         return super().list(request, *args, **kwargs)
 
     def get_permissions(self):
