@@ -53,9 +53,13 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     # Celery Beat
     'django_celery_beat',
+    # CORS
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -177,3 +181,15 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(hour='01', minute='00'),
     },
 }
+
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",  # frontend server
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://localhost:8000",  # change to frontend server
+    # and add address to backend server
+]
+
+CORS_ALLOW_ALL_ORIGINS = False
