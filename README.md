@@ -19,6 +19,7 @@ After registration an invitation link will be included in server response (JSON
 format) back to user. By using it user can connect to Telegram Bot, which will
 notify user every day at 1 am (Moscow Time) about habits he has to complete.
 Notification tasks are executed using Celery.
+
 ---
 
 ### Habit Constraints
