@@ -43,6 +43,9 @@ def update_telegram_ids():
 
 @shared_task
 def send_notifications():
+    """
+    Sends notification about habit for today to each user with Telegram ID
+    """
     # Identify API method
     method = '/sendMessage'
     # Compose URL for request
@@ -76,8 +79,8 @@ def send_notifications():
             'text': message,
             'parse_mode': 'MarkdownV2'
         }
-        response = requests.get(
+        # Send notification
+        requests.post(
             url,
             params=params,
         )
-        print(response.json())
