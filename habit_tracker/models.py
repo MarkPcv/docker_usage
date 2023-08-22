@@ -35,4 +35,3 @@ class Habit(models.Model):
         verbose_name = 'habit'
         verbose_name_plural = 'habits'
         ordering = ('owner',)
-
