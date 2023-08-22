@@ -211,7 +211,7 @@ class HabitTest(APITestCase):
         data = {
             'period': 10
         }
-        # Change first habit
+        # Change period habit
         response = self.client.patch(
             f'/habits/{self.habit.pk}/',
             data=data
@@ -230,7 +230,7 @@ class HabitTest(APITestCase):
         """Testing period validation when it is a zero"""
         # Authenticate user without token
         self.client.force_authenticate(self.user)
-        # Update action of habit
+        # Update period of habit
         data = {
             'period': 0
         }
@@ -255,7 +255,7 @@ class HabitTest(APITestCase):
         """
         # Authenticate user without token
         self.client.force_authenticate(self.user)
-        # Update action of habit
+        # Update execution time of habit
         data = {
             'exec_time': 200
         }
@@ -280,7 +280,7 @@ class HabitTest(APITestCase):
         """
         # Authenticate user without token
         self.client.force_authenticate(self.user)
-        # Update action of habit
+        # Update execution time of habit
         data = {
             'exec_time': 0
         }
@@ -299,4 +299,138 @@ class HabitTest(APITestCase):
             }
         )
 
+    def test_validate_associated_habit(self):
+        """
+        Testing validation case when associated habit cannot be pleasant
+        """
+        # Authenticate user without token
+        self.client.force_authenticate(self.user)
+        # Create second habit
+        response = self.client.post(
+            '/habits/',
+            data={
+                'place': 'place2',
+                'action': 'action2',
+                'time': '08:00',
+                'is_pleasant': False,
+                'is_public': True,
+                'exec_time': 100,
+                'period': 2
+            }
+        )
+        # Add second habit to first as associated
+        response = self.client.patch(
+            f'/habits/{self.habit.pk}/',
+            data={
+                'associated_habit': response.json()['id']
+            }
+        )
+        # Check validation case
+        self.assertEqual(
+            response.json(),
+            {
+                "non_field_errors": [
+                    "The associated habit must be pleasant"
+                ]
+            }
+        )
 
+    def test_validate_habit_has_both(self):
+        """
+        Testing validation case when habit has both award and associated
+        habit
+        """
+        # Authenticate user without token
+        self.client.force_authenticate(self.user)
+        # Create second habit
+        response = self.client.post(
+            '/habits/',
+            data={
+                'place': 'place2',
+                'action': 'action2',
+                'time': '08:00',
+                'is_pleasant': True,
+                'is_public': True,
+                'exec_time': 100,
+                'period': 2
+            }
+        )
+        # Add second habit to first as associated
+        response = self.client.patch(
+            f'/habits/{self.habit.pk}/',
+            data={
+                'associated_habit': response.json()['id'],
+                'award': 'do something'
+            }
+        )
+        # Check validation case
+        self.assertEqual(
+            response.json(),
+            {
+                "non_field_errors": [
+                    "Habit cannot have both associated habit and award"
+                ]
+            }
+        )
+
+    def test_validate_pleasant_habit(self):
+        """
+        Testing validation case when pleasant habit has either award or
+        associated habit
+        """
+        # Authenticate user without token
+        self.client.force_authenticate(self.user)
+        # Create second habit
+        response = self.client.post(
+            '/habits/',
+            data={
+                'place': 'place2',
+                'action': 'action2',
+                'time': '08:00',
+                'is_pleasant': True,
+                'is_public': True,
+                'exec_time': 100,
+                'period': 2
+            }
+        )
+        # Get second habit id
+        habit_id = response.json()['id']
+        # Modify first habit
+        self.client.patch(
+            f'/habits/{self.habit.pk}/',
+            data={
+                'is_pleasant': True
+            }
+        )
+        # Add first habit to second as associated
+        response = self.client.patch(
+            f'/habits/{habit_id}/',
+            data={
+                'associated_habit': self.habit.pk,
+            }
+        )
+        # Check validation case - plesant habit has associated habit
+        self.assertEqual(
+            response.json(),
+            {
+                "non_field_errors": [
+                    "The pleasant habit cannot have associated habit"
+                ]
+            }
+        )
+        # Add award to first plesant habit
+        response = self.client.patch(
+            f'/habits/{self.habit.pk}/',
+            data={
+                'award': 'do_something'
+            }
+        )
+        # Check validation case - pleasant habit has award
+        self.assertEqual(
+            response.json(),
+            {
+                "non_field_errors": [
+                    "The pleasant habit cannot have award"
+                ]
+            }
+        )
