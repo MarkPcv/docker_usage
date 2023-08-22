@@ -6,9 +6,6 @@ from habit_tracker.models import Habit
 from users.models import User
 
 
-# print(response.json()) ## TODO remove after FINISH
-
-
 class HabitTest(APITestCase):
     """
     Class for testing model `habit_tracker.Model`
@@ -64,7 +61,7 @@ class HabitTest(APITestCase):
             response.status_code,
             status.HTTP_201_CREATED
         )
-        # Check total number of lessons
+        # Check total number of habits
         self.assertEqual(
             Habit.objects.count(),
             2
@@ -162,7 +159,7 @@ class HabitTest(APITestCase):
             response.status_code,
             status.HTTP_204_NO_CONTENT
         )
-        # Check that no lesson exists in Database
+        # Check that no habit exists in Database
         self.assertFalse(
             Habit.objects.exists()
         )
@@ -409,7 +406,7 @@ class HabitTest(APITestCase):
                 'associated_habit': self.habit.pk,
             }
         )
-        # Check validation case - plesant habit has associated habit
+        # Check validation case - pleasant habit has associated habit
         self.assertEqual(
             response.json(),
             {
@@ -418,7 +415,7 @@ class HabitTest(APITestCase):
                 ]
             }
         )
-        # Add award to first plesant habit
+        # Add award to first pleasant habit
         response = self.client.patch(
             f'/habits/{self.habit.pk}/',
             data={
