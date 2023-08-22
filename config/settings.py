@@ -14,6 +14,8 @@ from pathlib import Path
 
 # Custom libraries for environment variables
 import os
+
+from celery.schedules import crontab
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -158,6 +160,7 @@ SIMPLE_JWT = {
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
 CELERY_IMPORTS = ("config.tasks", )
+CELERY_TIMEZONE = 'Europe/Moscow'
 
 # Telegram API settings
 TELEGRAM_API_KEY = os.getenv('TELEGRAM_API_KEY')
@@ -168,5 +171,9 @@ CELERY_BEAT_SCHEDULE = {
     'update-users': {
         'task': 'config.tasks.update_telegram_ids',
         'schedule': timedelta(minutes=1),
+    },
+    'notify-users': {
+        'task': 'config.tasks.send_notifications',
+        'schedule': crontab(hour='01', minute='00'),
     },
 }
