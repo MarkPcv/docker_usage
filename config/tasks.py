@@ -22,15 +22,17 @@ def update_telegram_ids():
     # Search for new email addresses and update Telegram IDs for users
     for update in updates:
         # Check type of message entity
-        if update['message']['entities']['type'] == 'email':
+        if update['message']['entities'][0]['type'] == 'email':
             # Get email adressess
             email = update['message']['text']
             # Check if user with this email exists
             if User.objects.filter(email=email).exists():
                 user = User.objects.get(email=email)
                 user.telegram_id = update['message']['chat']['id']
+                user.save()
     # Confirm updates
-    requests.get(
-        url,
-        params={'offset': updates[-1]['update_id'] + 1}
-    )
+    if updates:
+        requests.get(
+            url,
+            params={'offset': updates[-1]['update_id'] + 1}
+        )
