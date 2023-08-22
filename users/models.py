@@ -21,6 +21,8 @@ class User(AbstractUser):
 
     phone = models.CharField(max_length=35, verbose_name='phone',
                              **NULLABLE)
+    # Telegram unique ID
+    telegram_id = models.TextField(verbose_name='telegram_id', **NULLABLE)
 
     # Role for permissions
     role = models.CharField(max_length=9, choices=UserRoles.choices,
