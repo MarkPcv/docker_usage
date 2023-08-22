@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     'django_celery_beat',
     # CORS
     'corsheaders',
+    # Documentation generator for the project
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
