@@ -64,7 +64,7 @@ def send_notifications():
             # Find difference between creation date and today's date
             diff = datetime.date.today() - habit.created_on
             # Check if habit should be done today
-            if diff.days // habit.period != 0:
+            if diff.days % habit.period != 0:
                 continue
             # Pleasant habits are not added to notification message
             elif not habit.is_pleasant:
