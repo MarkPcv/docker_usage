@@ -25,6 +25,9 @@ class Habit(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE,
                               verbose_name='owner', **NULLABLE)
 
+    # Add date of habit creation
+    created_on = models.DateField(auto_now_add=True, verbose_name='created_on')
+
     def __str__(self):
         return f'I will {self.action} at {self.time} in {self.place}'
 
