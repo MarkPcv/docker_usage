@@ -1,3 +1,4 @@
+from django.core.management import call_command
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -20,7 +21,7 @@ class UserTest(APITestCase):
             'email': 'test@gmail.com',
             'password': 'test'
         }
-        # Create second habit
+        # Register user
         response = self.client.post(
             '/users/register/',
             data=data
@@ -30,11 +31,26 @@ class UserTest(APITestCase):
             response.status_code,
             status.HTTP_201_CREATED
         )
-        # Check total number of lessons
+        # Check email of registered user
         self.assertEqual(
             User.objects.all()[0].email,
             'test@gmail.com'
         )
 
-    # def test_createsuperuser_command(self):
-
+    def test_createsuperuser_command(self):
+        """
+        Testings custom management command for superuser creation
+        """
+        # Call custom command
+        call_command('csu')
+        # Get user
+        user = User.objects.all()[0]
+        # Check email of newly created superuser
+        self.assertEqual(
+            user.email,
+            'admin@gmail.com'
+        )
+        # Check admin property of user
+        self.assertTrue(
+            user.is_superuser
+        )
