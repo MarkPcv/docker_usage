@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'rest_framework',
     # JWT authentication
     'rest_framework_simplejwt',
+    # Celery Beat
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
