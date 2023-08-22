@@ -90,7 +90,7 @@ class HabitTest(APITestCase):
              'associated_habit': None, 'owner': self.user.pk}
         )
 
-    def test_habit_update(self):
+    def test_habit_partial_update(self):
         """Testing habit partial update"""
         # Authenticate user without token
         self.client.force_authenticate(self.user)
@@ -112,6 +112,39 @@ class HabitTest(APITestCase):
         self.assertEqual(
             Habit.objects.get(pk=self.habit.pk).action,
             'new action'
+        )
+
+    def test_habit_update(self):
+        """Testing habit full update"""
+        # Authenticate user without token
+        self.client.force_authenticate(self.user)
+
+        # Test data
+        data = {
+            'place': 'place2',
+            'action': 'action2',
+            'time': '07:00',
+            'is_pleasant': False,
+            'is_public': True,
+            'exec_time': 60,
+            'period': 1
+        }
+        # Create second habit
+        response = self.client.put(
+            f'/habits/{self.habit.pk}/',
+            data=data
+        )
+
+        # Check status
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+        # Check habit data
+        new_habit = Habit.objects.all()[0]
+        self.assertEqual(
+            {'place': new_habit.place, 'action': new_habit.action},
+            {'place': 'place2', 'action': 'action2'}
         )
 
     def test_habit_delete(self):
