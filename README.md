@@ -46,6 +46,7 @@ Bot is established user should send its email to Telegram Bot.
 After completing above steps user will receive notification about habits for
 the day in the next early morning. Keep in mind that notifications do not
 mention pleasant habits.
+
 ---
 
 ### Authorization
