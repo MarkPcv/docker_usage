@@ -1,3 +1,5 @@
+import datetime
+
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -86,6 +88,7 @@ class HabitTest(APITestCase):
             {'id': self.habit.pk, 'place': 'place1', 'action': 'action1',
              'time': '07:00:00', 'is_pleasant': False, 'is_public': True,
              'exec_time': 60, 'period': 1, 'award': None,
+             'created_on': datetime.date.today().__str__(),
              'associated_habit': None, 'owner': self.user.pk}
         )
 
@@ -189,6 +192,7 @@ class HabitTest(APITestCase):
                              'time': '07:00:00', 'is_pleasant': False,
                              'is_public': True,
                              'exec_time': 60, 'period': 1, 'award': None,
+                             'created_on': datetime.date.today().__str__(),
                              'associated_habit': None, 'owner': self.user.pk}]
             }
         )
